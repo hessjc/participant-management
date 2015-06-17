@@ -1,0 +1,111 @@
+@(globalForm: Form[formulars.ConfigurationForm.GlobalForm], eventForm: Form[formulars.ConfigurationForm.EventForm], addEventForm: Form[formulars.ConfigurationForm.AddEventForm], ticketForm: Form[formulars.ConfigurationForm.TicketForm], courseForm: Form[formulars.ConfigurationForm.CourseForm], emailForm: Form[formulars.ConfigurationForm.EmailForm])
+
+@index {
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-xs-12">
+        
+        	<!-- bootstrap3-wysihtml5-Editor -->
+	        <link href="@routes.Assets.at("stylesheets/wysihtml5/prettify.css")" rel="stylesheet"' />
+			<link href="@routes.Assets.at("stylesheets/wysihtml5/bootstrap3-wysihtml5.css")" rel="stylesheet"' />
+			
+			<script src="@routes.Assets.at("javascripts/wysihtml5/wysihtml5-0.3.0.js")"></script>
+			<script src="@routes.Assets.at("javascripts/wysihtml5/prettify.js")"></script>
+			<script src="@routes.Assets.at("javascripts/wysihtml5/highlight.pack.js")"></script>
+			<script src="@routes.Assets.at("javascripts/wysihtml5/bootstrap3-wysihtml5.js")"></script>
+			<!-- ------------------------ -->
+			
+			<div style="padding-bottom: 20px;">
+				<select class="form-control" id="events" name="events" onchange="changeEvent(this)">
+				@for(event <- Event.find.all()) {
+					<option id="@event.shortcode" value="@event.shortcode" @if(EventController.event.shortcode==event.shortcode){selected}>@event.shortcode</option>
+				}
+				</select>
+				<a data-toggle="modal" data-target="#addEventModal" href="#" style="text-decoration: none;"><i class="glyphicon glyphicon-plus"></i> Neues Event</a>
+				@config.addEvent(addEventForm)
+			
+				<script>
+				function changeEvent(event) {
+					myJsRoutes.controllers.Application.changeEvent(event.value).ajax({
+				        success : function(data) {
+				        	window.location.href="/configuration?shortcode="+data.shortcode;	
+				        }
+				    });
+				}
+				</script>
+			</div>
+        
+			<div class="configuration">
+			    <ul class="nav nav-tabs" id="configurationTab">
+			        <li><a data-toggle="tab" href="#tabGlobal">@Messages("configuration.global")</a></li>
+			        <li><a data-toggle="tab" href="#tabEvent">@Messages("configuration.event")</a></li>
+			        <li><a data-toggle="tab" href="#tabTemplates">@Messages("configuration.templates")</a></li>
+			        <li><a data-toggle="tab" href="#tabLoginTemplate">@Messages("configuration.login")</a></li>
+			        <li><a data-toggle="tab" href="#tabParticipant">@Messages("configuration.participant")</a></li>
+			        <li><a data-toggle="tab" href="#tabTickets">@Messages("configuration.tickets")</a></li>
+			        <li><a data-toggle="tab" href="#tabCourses">@Messages("configuration.courses")</a></li>
+			        <!--li><a data-toggle="tab" href="#tabHotels">@Messages("configuration.hotels")</a></li-->
+			        <li><a data-toggle="tab" href="#tabEmails">@Messages("configuration.emails")</a></li>
+			        <li><a data-toggle="tab" href="#tabImpressum">@Messages("configuration.impressum")</a></li>
+			        <li><a data-toggle="tab" href="#tabPrivacy">@Messages("configuration.privacy")</a></li>
+			        <li><a data-toggle="tab" href="#tabContact">@Messages("configuration.contact")</a></li>
+			        <!--li><a data-toggle="tab" href="#tabVariables">@Messages("configuration.variables")</a></li-->
+			    </ul>
+			    <div class="tab-content">
+			        <div id="tabGlobal" class="tab-pane fade in active">
+			            @config.global(globalForm)
+			        </div>
+			        <div id="tabEvent" class="tab-pane fade in">
+			            @config.event(eventForm)
+			        </div>
+			        <div id="tabTemplates" class="tab-pane fade in">
+			            @config.templates()
+			        </div>
+			        <div id="tabLoginTemplate" class="tab-pane fade in">
+			            @config.login()
+			        </div>
+			        <div id="tabParticipant" class="tab-pane fade in">
+			            @config.participant()
+			        </div>
+			        <div id="tabTickets" class="tab-pane fade in">
+			            @config.tickets(ticketForm)
+			        </div>
+			        <div id="tabCourses" class="tab-pane fade in">
+			            @config.courses(courseForm)
+			        </div>
+			        <div id="tabEmails" class="tab-pane fade in">
+			            @config.emails(emailForm)
+			        </div>
+			        <div id="tabImpressum" class="tab-pane fade in">
+			            @config.impressum()
+			        </div>
+			        <div id="tabPrivacy" class="tab-pane fade in">
+			            @config.privacy()
+			        </div>
+			        <div id="tabContact" class="tab-pane fade in">
+			            @config.contact()
+			        </div>
+			    </div>
+			</div>
+           
+           	<script>
+           	$('#configurationTab a').click(function (e) {
+			  e.preventDefault()
+			  $(this).tab('show')
+			})
+			
+			// SPECIFIC TABS ////////////////
+			// Javascript to enable link to tab
+			var url = document.location.toString();
+			if (url.match('#')) {
+			    $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+			} 
+			
+			// Change hash for page-reload
+			$('.nav-tabs a').on('shown.bs.tab', function (e) {
+			    window.location.hash = e.target.hash;
+			})
+			////////////////////////////////
+			</script>
+        </div>
+    </div>
+}

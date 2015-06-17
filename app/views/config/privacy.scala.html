@@ -1,0 +1,25 @@
+@import bootstrap3._
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+  <h3>@Messages("configuration.privacy.headline")</h3>
+</div>
+
+@helper.form(routes.ConfigurationController.savePrivacy(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "privacy-form") {
+<textarea id="privacy" name="privacy" class="textarea" placeholder="" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@EventController.event.configuration.privacy</textarea>
+<div class="form-group">	
+	<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+</div>	
+}
+<script>
+    $('#privacy').wysihtml5({
+        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+        "color": true,
+        "size": 'sm',
+        "html": true,
+        "format-code": true
+    });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    $(prettyPrint);
+</script>

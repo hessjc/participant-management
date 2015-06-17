@@ -1,0 +1,105 @@
+@index {
+
+    <div class="container">
+		<div class="row">
+			<div class="[ col-xs-12 col-sm-offset-2 col-sm-8 ]">
+				<ul class="event-list">
+					@for((event,index) <- Event.find.all().zipWithIndex) {
+					<li>
+						<time datetime="@event.startDate" id="date@index">
+							<span class="day">@event.startDate.toString().substring(8,10)</span>
+							<span class="month">@utilities.DateHelper.shortMonths.get(Integer.parseInt(event.startDate.toString().substring(5,7))-1)</span>
+							<span class="year">@event.startDate.toString().substring(0,4)</span>
+							<span class="time">ALL DAY</span>
+						</time>
+						<img alt="@event.name" src="@event.descriptionImage" />
+						<div class="info">
+							<h2 class="title">@event.name</h2>
+							<p class="desc">@event.description</p>
+						</div>
+						<div class="social">
+							<ul>
+								<li class="facebook" style="width:33%;"><a target="_blank" href="@if(event.facebook==""||event.facebook==null){#facebook}else{@event.facebook}"><span class="fa fa-facebook"></span></a></li>
+								<li class="twitter" style="width:34%;"><a target="_blank" href="@if(event.twitter==""||event.twitter==null){#twitter}else{@event.twitter}"><span class="fa fa-twitter"></span></a></li>
+								<li class="google-plus" style="width:33%;"><a target="_blank" href="@if(event.googleplus==""||event.googleplus==null){#googleplus}else{@event.googleplus}"><span class="fa fa-google-plus"></span></a></li>
+							</ul>
+						</div>
+					</li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+    <script>
+    var colors = [];
+    
+	function getRandomColor() {
+	    var letters = '0123456789ABCDEF'.split('');
+	    var color = '#';
+	    for (var i = 0; i < 6; i++ ) {
+	        color += letters[Math.floor(Math.random() * 16)];
+	    }
+	    document.getElementById("date"+colors.length).style.backgroundColor = color;
+	    colors.push(color);
+	    return color;
+	}
+    
+    $(document).ready(function() { 
+        // FULLCALENDAR
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            timeFormat: 'H(:mm)',
+            defaultDate: moment(),
+            eventLimit: true, // allow "more" link when too many events
+            editable: false,
+            selectable: false,
+            selectHelper: true,
+            events: [
+            @for((event, index) <- Event.find.all().zipWithIndex) {
+                @Html("{")
+                    title: '@event.name', 
+                    start: '@event.startDate',
+                    end: '@event.endDate',
+                    url: 'http://'+window.location.hostname+'/@event.shortcode/',
+                    color: getRandomColor()
+                @Html("}") @if(index<(Event.find.all().length-1)) { @Html(",") }
+            }
+            ]
+        });
+        // EVENT LISTENER
+        document.addEventListener("mouseover", hoverDaysEffect, true);
+    });
+      
+    // HOVER DAY FIELDS - CHANGE BGCOLOR/HIGHLIGHT
+    // MOUSEOVER - MOUSEOUT - DATA FIELDS
+    function hoverDaysEffect() {
+        $(".fc-day,.fc-day-number").on({
+            // MOUSEENTER
+            mouseenter: function () {
+                // EVERY TD WITH DATA-DATE EQUALS HOVER:DATE
+                $('td[data-date='+$(this).attr("data-date")+']').each(function() {
+                    // CHANGE BACKGROUND-COLOR AND CURSOR ITEM
+                    $(this).css("background-color", "rgba(189,218,3,1");
+                    $(this).css("cursor", "help");
+                }); // END
+            },
+            // MOUSELEAVE
+            mouseleave: function () {
+                // EVERY TD WITH DATA-DATE EQUALS HOVER:DATE
+                $('td[data-date='+$(this).attr("data-date")+']').each(function() {
+                    // CHANGE BACKGROUND-COLOR AND CURSOR ITEM
+                    $(this).css("background-color", "");
+                    $(this).css("cursor", "");
+                }); // END
+            }
+        });
+    }
+    </script>
+    
+    <div id="calendar"></div>
+}

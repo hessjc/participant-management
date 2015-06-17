@@ -1,0 +1,14 @@
+@(stepIndex: Integer)
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<div class="form-group">
+			@if(stepIndex==0) {	
+				<a href="@routes.Application.showStart(EventController.event.shortcode)"> 
+			} else {
+				<a href="@routes.RegistrationController.showRegistration(EventController.event.shortcode, stepIndex-1)">
+			}
+			<button id="backwards" type="button" class="btn btn-primary">@Messages("button.back")</button></a>
+			<button id="continue" type="submit" value="submit" class="btn btn-primary">weiter</button></a>
+		</div>
+	</div>
+</div>

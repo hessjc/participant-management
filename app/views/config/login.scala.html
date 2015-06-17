@@ -1,0 +1,39 @@
+@import bootstrap3._
+
+@helper.form(routes.ConfigurationController.saveLoginTemplate(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "loginTemplate-form") {
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+	<h3>@Messages("configuration.login.headline")</h3>
+</div>
+	
+<div class="form-group">
+	<div class="input-group">
+		<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>login:</span>
+		<input class="form-control" type="checkbox" name="login" id="login" value="true" @if(EventController.event.configuration.findTemplateByName("loginTemplate").login){ checked}></input>
+	</div>	
+</div>
+
+<div class="form-group">
+	<div class="input-group">
+		<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>registration:</span>
+		<input class="form-control" type="checkbox" name="registration" id="registration" value="true" @if(EventController.event.configuration.findTemplateByName("loginTemplate").registration){ checked}></input>
+	</div>	
+</div>
+	
+<div class="form-group">
+	<div class="input-group">
+		<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>passwordlogin:</span>
+		<input class="form-control" type="checkbox" name="passwordLogin" id="passwordLogin" value="true" @if(EventController.event.configuration.findTemplateByName("loginTemplate").passwordLogin){ checked}></input>
+	</div>	
+</div>
+	
+<div class="form-group">
+	<label class="col-xs-3 control-label">@Messages("configuration.event.passwords")</label>
+    <div class="col-xs-8">
+    	<input type="text" name="passwords" class="form-control" value="@EventController.event.configuration.findTemplateByName("loginTemplate").passwords" data-role="tagsinput" />
+    </div>
+</div>	
+		
+<div class="form-group">	
+	<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+</div>
+}

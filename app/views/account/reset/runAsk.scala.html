@@ -1,0 +1,17 @@
+@import helper._
+@implicitFieldConstructor = @{
+    FieldConstructor(twitterBootstrapInput.render)
+}
+
+@index {
+
+    <h3>@Messages("resetpassword")</h3>
+
+    @wflash()
+
+    @Messages("resetpassword.mailsent")
+    <div class="form-actions">
+        <a href="@routes.Application.showStart(EventController.event.shortcode)" class="btn btn-default">@Messages("goback")</a>
+    </div>
+
+}

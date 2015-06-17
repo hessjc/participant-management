@@ -1,0 +1,113 @@
+@import bootstrap3._
+
+@(courseForm: Form[formulars.ConfigurationForm.CourseForm])
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+  <h3>@Messages("configuration.courses.headline")</h3>
+</div>
+<table class="table table-striped" border="1">
+	<tr>
+		<th>id</th><th>title</th><th>description</th><th>slots</th><th>&nbsp;</th><th>&nbsp;</th><th>&nbsp;</th>
+	</tr>
+	@for((course,count)<-Course.find.all().zipWithIndex) {
+	<tr id="course.@course.id" data-editable="1">
+		<td id="course.id.@course.id">@course.id</td>
+		<td id="course.title.@course.id">@course.title</td>
+		<td id="course.description.@course.id">@course.description</td>
+		<td id="course.slots.@course.id">@course.slots</td>
+		<td><a href="javascript:saveCourse(@course.id)" id="course.save.@course.id" class="save"><i class="glyphicon glyphicon glyphicon glyphicon-check" title="save"></a></td>
+		<td><a href="javascript:editCourse(@course.id)" id="course.edit.@course.id"><i class="glyphicon glyphicon glyphicon glyphicon-edit" title="edit"></a></td>
+		<td><a href="@routes.CourseController.removeCourse(course.id)" id="course.remove.@course.id"><i class="glyphicon glyphicon glyphicon glyphicon-remove" title="remove"></a></td>
+	</tr>
+	}
+	<tr>
+		<td colspan="7"><a data-toggle="modal" data-target="#addCourseModal" href="#" style="text-decoration: none;"><i class="glyphicon glyphicon glyphicon glyphicon-plus"></i> Neues Course</a></td>
+	</tr>
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    	<div class="modal-content">
+        @helper.form(routes.CourseController.addCourse(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "configuration-form") {
+        	<div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Messages("configuration.courses.addcourse.headline")</h4>
+            </div>
+            <div class="modal-body">
+            
+				<!-- Titel -->
+				@input(courseForm("title"),
+					icon = "glyphicon glyphicon-user",
+					label = Messages("configuration.courses.addcourse.title"),
+					typ = "text",
+					placeholder = "")
+
+				<!-- Beschreibung -->
+				@textarea(courseForm("description"),
+					icon = "glyphicon glyphicon-user",
+					label = Messages("configuration.courses.addcourse.description"),
+					placeholder = "")
+					
+				<!-- Plätze -->
+				@input(courseForm("slots"),
+					icon = "glyphicon glyphicon-user",
+					label = Messages("configuration.courses.addcourse.slots"),
+					typ = "number",
+					placeholder = "")
+					
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("button.close")</button>
+                <button type="submit" type="button" class="btn btn-primary">@Messages("button.create")</button>
+            </div>
+        }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<script>
+$(document).ready(function() {
+    $(".save").each(function() {
+    $(this).css("opacity", "0.2");
+    });
+});
+
+function editCourse(course) {
+	if(document.getElementById("course."+course).getAttribute("data-editable")=="1") {
+		var courseTitle = document.getElementById("course.title."+course).innerText;
+		document.getElementById("course.title."+course).innerHTML="<input type='text' id='input.course.title."+course+"' class='form-control' placeholder='"+courseTitle+"' value='"+courseTitle+"'>";
+		var courseDescription = document.getElementById("course.description."+course).innerText;
+		document.getElementById("course.description."+course).innerHTML="<input type='text' id='input.course.description."+course+"' class='form-control' placeholder='"+courseDescription+"' value='"+courseDescription+"'>";
+		var courseSlots = document.getElementById("course.slots."+course).innerText;
+		document.getElementById("course.slots."+course).innerHTML="<input type='number' id='input.course.slots."+course+"' class='form-control' placeholder='"+courseSlots+"' value='"+courseSlots+"'>";
+		
+		document.getElementById("course.save."+course).style.opacity = "1";
+		
+		document.getElementById("course."+course).setAttribute("data-editable","0");
+	} else {
+		document.getElementById("course.title."+course).innerHTML = document.getElementById("input.course.title."+course).placeholder;
+		document.getElementById("course.description."+course).innerHTML = document.getElementById("input.course.description."+course).placeholder;
+		document.getElementById("course.slots."+course).innerHTML = document.getElementById("input.course.slots."+course).placeholder;
+		document.getElementById("course.save."+course).style.opacity = "0.2";
+		document.getElementById("course."+course).setAttribute("data-editable","1");
+	}
+}
+
+
+function saveCourse(course) {
+	var title = document.getElementById("input.course.title."+course).value;
+	var description = document.getElementById("input.course.description."+course).value;
+	var slots = document.getElementById("input.course.slots."+course).value;
+	
+	myJsRoutes.controllers.CourseController.saveCourse(course,title,description,slots).ajax({
+        success : function(data) {                              
+        	window.location.reload();
+        }
+    });
+}
+</script>

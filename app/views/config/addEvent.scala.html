@@ -1,0 +1,76 @@
+@import bootstrap3._
+
+@(addEventForm: Form[formulars.ConfigurationForm.AddEventForm])
+
+<!-- Modal -->
+<div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    	<div class="modal-content">
+        @helper.form(routes.ConfigurationController.addEvent(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "addevent-form", 'enctype -> "multipart/form-data") {
+        	<div class="modal-header">
+            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">@Messages("configuration.events.addevent.headline")</h4>
+            </div>
+            <div class="modal-body">
+            
+			<!-- Configuration-Titel -->
+			@input(addEventForm("configurationTitle"),
+				icon = "glyphicon glyphicon-user",
+				label = Messages("configuration.events.addevent.title"),
+				typ = "text",
+				placeholder = "")      
+				
+			<!-- Configuration-Logo -->
+			@input(addEventForm("configurationLogo"),
+				icon = "glyphicon glyphicon-user",
+				label = Messages("configuration.events.addevent.logo"),
+				typ = "text",
+				placeholder = "")
+				
+			<!-- Event-Name -->
+			@input(addEventForm("addEventName"),
+				icon = "glyphicon glyphicon-user",
+				label = Messages("configuration.events.addevent.name"),
+				typ = "text",
+				placeholder = "")
+					    
+			<!-- Event-Shortcode -->
+			@input(addEventForm("addEventShortcode"),
+				icon = "glyphicon glyphicon-user",
+				label = Messages("configuration.events.addevent.shortcode"),
+				typ = "text",
+				placeholder = "") 	
+
+			<!-- Event-Beschreibung -->
+			@input(addEventForm("addEventDescription"),
+				icon = "glyphicon glyphicon-user",
+				label = Messages("configuration.events.addevent.description"),
+				typ = "text",
+				placeholder = "")
+				
+			<!-- Anfangsdatum der Veranstaltung -->
+			@input(addEventForm("addEventStartDate"),
+				icon = "glyphicon glyphicon-earphone",
+				label = Messages("configuration.events.addevent.startdate"),
+				typ = "date",
+				placeholder = EventController.event.startDate.toString())
+		
+			<!-- Enddatum der Veranstaltung -->
+			@input(addEventForm("addEventEndDate"),
+				icon = "glyphicon glyphicon-earphone",
+				label = Messages("configuration.events.addevent.enddate"),
+				typ = "date",
+				placeholder = EventController.event.endDate.toString())	
+            
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@Messages("button.close")</button>
+                <button type="submit" type="button" class="btn btn-primary">@Messages("button.create")</button>
+            </div>
+        }
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

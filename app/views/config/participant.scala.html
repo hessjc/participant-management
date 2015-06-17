@@ -1,0 +1,82 @@
+@import bootstrap3._
+
+<script src="@routes.Assets.at("javascripts/ddslick.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/bootstrap-glyphicon-picker.js")" type="text/javascript"></script>
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+	<h3>@Messages("configuration.participant.headline")</h3>
+</div>
+@helper.form(routes.ConfigurationController.saveParticipantForm(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "participant-form") {
+<div class="table-responsive"">
+	<table class="table table-striped">
+		<tr>
+			<th>id.form.name</th>
+			<th>typ</th>
+			<th>act.icon</th>
+			<th>new.icon</th>
+			<th>displayed</th>
+			<th>required</th> 
+		</tr>
+		<tr>
+			<td colspan="6">
+				<h2>@Messages("participant.headline.title") <span class="glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target=".personalData"></span></h2>
+			</td>
+		</tr>
+		@for((participantData,index) <- EventController.event.configuration.findTemplateByName("participantTemplate").formData.zipWithIndex) {
+		<tr class="collapse out budgets personalData">
+			<td>@participantData.name</td>
+			<td>@participantData.typ</td>
+			<td><span class="@participantData.icon"></span></td>
+			<td width="240px">
+				<input type="text" name="select@participantData.name" class="icon-picker" placeholder="@participantData.icon" value="@participantData.icon" />
+			</td>
+			<td><input type="checkbox" name="display@participantData.name" value="true"@if(participantData.display){checked}></input></td>
+			<td><input type="checkbox" name="required@participantData.name" value="true"@if(participantData.required){checked}></input></td>
+		</tr>
+		}
+		<tr><td colspan="6"><h2>@Messages("participant.billingaddress.headline.title") <span class="glyphicon glyphicon-collapse-down" data-toggle="collapse" data-target=".billingData"></span></h2></td></tr>
+		@for((billingData,index) <- EventController.event.configuration.findTemplateByName("billingTemplate").formData.zipWithIndex) {
+		<tr class="collapse out budgets billingData">
+			<td>@billingData.name</td>
+			<td>@billingData.typ</td>
+			<td><span class="@billingData.icon"></span></td>
+			<td>
+				<select name="selectbilling@billingData.name" for="glyphicons" id="selectbilling@billingData.name">
+				@for((icon,index) <- utilities.Configuration.glyphicons.zipWithIndex) {
+					<option value="@icon" data-style="glyphicon @icon" @if(billingData.icon==icon){selected}>@icon</option>
+				}
+				</select>
+			</td>
+			<td><input type="checkbox" name="displaybilling@billingData.name" value="true"@if(billingData.display){checked}></input></td>
+			<td><input type="checkbox" name="requiredbilling@billingData.name" value="true"@if(billingData.required){checked}></input></td>
+		</tr>
+		}
+	</table>
+</div>
+<div class="form-group">
+	<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+</div>
+}
+	
+<script>
+	$(function() {
+		$.widget("custom.iconselectmenu", $.ui.selectmenu, {
+			_renderItem : function(ul, item) {
+				var li = $("<li>", {
+					text : item.label
+				});
+				$("<span>", {
+					"class" : item.element.attr("data-style"),
+					"style" : "float:left;padding-right:10px;"
+				}).appendTo(li);
+				return li.appendTo(ul);
+			}
+		});
+		$("select[for=glyphicons]").each(
+				function() {
+					$(this).iconselectmenu().iconselectmenu("menuWidget")
+							.addClass("ui-menu-icons avatar");
+				})
+		$(".ui-selectmenu-button").css('width', '180px');
+	});
+</script>

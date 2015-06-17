@@ -1,0 +1,13 @@
+@(field: Field, value: String = "", typ: String="", icon: String = "glyphicon-user", label: String = "", placeholder: String = "", helper: String = "", required: Boolean = true, steps: String = "1")
+
+<div class="form-group @if(field.hasErrors) {has-error}">
+	<div class="input-group">
+		<span class="input-group-addon"><span class="@icon" style="margin-right: 6px;"></span>@if(label!=""){@label@if(required){*}:}</span>
+		<input class="form-control" id="@field.id" name="@field.name" placeholder="@placeholder" type="@typ" value="@field.value.getOrElse(value)" 
+			@if(typ=="number") {step="@steps"}
+			@if(field.hasErrors) { data-toggle="tooltip-error" data-placement="right" title="Tooltip on right" }
+			@if(typ=="checkbox"){@if(value==true){checked}}></input>
+	</div>	
+	<span class="help-block bg-info">@helper</span>
+    <span class="help-block">@{field.error.map { error => error.message }}</span>
+</div>

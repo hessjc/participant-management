@@ -1,0 +1,142 @@
+@(participantForm: Form[formulars.ParticipantForm], stepIndex: Integer)
+@import bootstrap3._
+
+@index {
+    <div class="row">
+    	<div class="col-lg-12 col-md-12 col-xs-12">
+    		
+    		@inc.stepwizard(stepIndex)
+    		
+    		@helper.form(routes.RegistrationController.addParticipant(EventController.event.shortcode,stepIndex), 'class -> "form-horizontal", 'id -> "participant-form") {
+    		<!-- persönliche Daten -->
+    		<div class="row">
+		    	<div class="page-header">
+					<h3>@Messages("participant.headline.title") <small>@Messages("participant.headline.subtitle")</small></h3>
+				</div>
+			</div>
+			
+    		<div class="row">
+    			<div class="col-lg-8 col-md-8 col-xs-8">
+					<!-- Der Form-Name ist die ID -->
+					@for((formData,index) <- EventController.event.configuration.findTemplateByName("participantTemplate").formData.zipWithIndex) {
+						@if(formData.display) {
+							@if(formData.typ=="select") {
+								<!-- @formData.name -->	   	
+								@select(participantForm(formData.name),
+									icon = formData.icon,
+							   		label = Messages("participant."+formData.name+".label"),
+								   	helper = Messages("participant."+formData.name+".helper"),
+							   		required = formData.required,
+							   		options = utilities.Configuration.salutations)
+							} else {
+								<!-- @formData.name -->
+								@input(participantForm(formData.name),
+									typ =  formData.typ,
+									icon = formData.icon,
+								   	label = Messages("participant."+formData.name+".label"),
+								   	placeholder = Messages("participant."+formData.name+".placeholder"),
+								   	helper = Messages("participant."+formData.name+".helper"),
+								   	required = formData.required)	
+							}
+						}
+					}
+        		</div>
+        		<div class="col-md-4">
+					<h3 class="dark-grey">Terms and Conditions</h3>
+					<p>
+						By clicking on "Register" you agree to The Company's' Terms and Conditions
+					</p>
+					<p>
+						While rare, prices are subject to change based on exchange rate fluctuations - 
+						should such a fluctuation happen, we may request an additional payment. You have the option to request a full refund or to pay the new price. (Paragraph 13.5.8)
+					</p>
+					<p>
+						Should there be an error in the description or pricing of a product, we will provide you with a full refund (Paragraph 13.5.6)
+					</p>
+					<p>
+						Acceptance of an order by us is dependent on our suppliers ability to provide the product. (Paragraph 13.5.6)
+					</p>
+				</div>
+    		</div>
+    		
+    		<!-- Lieferadresse -->
+    		<div class="row">
+	    		<div class="page-header">
+					<h3><input type="checkbox" style="margin-right: 10px;" id="billing" name="billing" value="1">@Messages("participant.billingaddress.headline.title") <small>@Messages("participant.billingaddress.headline.subtitle")</small></h3>
+				</div>
+			</div>
+    		<div class="row" id="billingaddress" style="display: none;">
+    			<div class="col-lg-6 col-md-6 col-xs-6">
+					<!-- Der Form-Name ist die ID -->
+					@for((formData,index) <- EventController.event.configuration.findTemplateByName("billingTemplate").formData.zipWithIndex) {
+						@if(formData.display) {
+							@if(formData.typ=="text" || formData.typ=="number" || formData.typ=="tel" || formData.typ=="password" || formData.typ=="date") {
+								<!-- @formData.name -->
+								@input(participantForm("billing"+formData.name),
+									typ =  formData.typ,
+									icon = formData.icon,
+								   	label = Messages("participant.billingaddress."+formData.name+".label"),
+								   	placeholder = Messages("participant.billingaddress."+formData.name+".placeholder"),
+								   	helper = Messages("participant.billingaddress."+formData.name+".helper"),
+								   	required = formData.required)	
+							}
+							@if(formData.typ=="select") {
+								<!-- @formData.name -->	   	
+								@select(participantForm("billing"+formData.name),
+									icon = formData.icon,
+							   		label = Messages("participant.billingaddress."+formData.name+".label"),
+								   	helper = Messages("participant.billingaddress."+formData.name+".helper"),
+							   		required = formData.required,
+							   		options = utilities.Configuration.salutations)
+							}
+						}
+					}
+        		</div>
+    		</div>
+    		
+    		<script>
+    		$("#billing").click(function() {
+    			if($("#billingaddress").css('display')=='none') $("#billingaddress").show();
+    			else $("#billingaddress").hide();
+    		});	
+			</script>
+			
+			@register.button(stepIndex)
+			}
+    		
+    <script type="text/javascript" charset="utf-8">
+    
+    $(document).ready(function(){
+    	if(@play.Play.application().configuration().getString("participant.liveValidation")) {
+			$('#participant-form').validate({
+			    rules: {
+			    	salutation: {
+			        	required: true
+			      	},
+			       	firstname: {
+			        	required: true
+			      	},
+			      	lastname: {
+			        	required: true
+			      	},
+			      	email: {
+			        	required: true,
+			        	email: true
+			      	}
+			    },
+			    messages: {
+			    	firstname: "Enter your firstname",
+			        lastname: "Enter your lastname"
+			    },
+				highlight: function(element) {
+					$(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+					$(element).append('<span class="glyphicon glyphicon-remove red"></span>');
+				},
+				success: function(element) {
+					$(element).append('<span class="glyphicon glyphicon-ok green"></span>').closest('.form-group').removeClass('has-error').addClass('has-success');
+				}
+		  	});
+    	}
+	}); // end document.ready
+    </script>
+}

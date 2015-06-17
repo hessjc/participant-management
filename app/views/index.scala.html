@@ -1,0 +1,127 @@
+@import bootstrap3._
+
+@(content: Html)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @inc.meta()
+
+    <title>@EventController.event.configuration.pageTitle</title>
+    
+    <!-- jQuery -->
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/code.jquery.com/jquery-2.1.3.min.js"></script>
+    <!--script src="//code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script-->
+    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/3.3.1/bootstrap.min.css")" />
+    <script src="@routes.Assets.at("javascripts/bootstrap/3.3.1/bootstrap.min.js")" type="text/javascript"></script>
+    
+    <!-- FullCalendar -->
+    <link href="@routes.Assets.at("stylesheets/fullcalendar/fullcalendar.css")" rel="stylesheet" />
+    <link href="@routes.Assets.at("stylesheets/fullcalendar/fullcalendar.print.css")" rel="stylesheet"' media="print" />
+    <script src="@routes.Assets.at("javascripts/fullcalendar/moment.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/fullcalendar/fullcalendar.min.js")" type="text/javascript"></script>
+  
+  	<!-- Bootstrap Form Validation -->
+  	<script src="@routes.Assets.at("javascripts/bootstrap-form-validation/jquery.validate.js")" type="text/javascript"></script>
+  
+  	<!-- Font-Awesome -->
+  	<link rel="stylesheet" href="@routes.Assets.at("stylesheets/font-awesome/font-awesome.min.css")">
+  
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+    
+    <!-- Custom Theme -->
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/themes/"+EventController.event.configuration.theme+".min.css")">
+    
+    <!-- JavaScript Helper-Classes -->
+    <script type="text/javascript" src='@routes.Application.javascriptRoutes()'></script>
+    <script src="@routes.Assets.at("javascripts/currentTime.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/dateFormatter.js")" type="text/javascript"></script>
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- currentTime.js -->
+    <script type="text/javascript">
+    $(document).ready(function() {
+        display_currentTime();
+    });
+    </script>
+</head>
+
+<script>
+	function changeLanguage(lang) {
+		myJsRoutes.controllers.Application.changeLanguage(lang).ajax({
+	        success : function(data) {                              
+	        	window.location.reload();
+	        }
+	    });
+	}
+	
+	function refreshGlobalMessage() {
+		myJsRoutes.controllers.Application.refreshGlobalMessage().ajax({
+			type: "POST",
+			success: function(data) {
+			  $("#globalMessage").html(data);
+			}
+		})
+	};
+</script>
+    
+<body style="overflow-x:hidden;background-image:url(@EventController.event.configuration.pageBackgroundimage)";>
+    <div class="row" id="mainTable" style="margin: 0px auto;width:@EventController.event.configuration.pageWidth%;">
+        <div class="col-lg-8 col-md-8 col-xs-10 col-lg-offset-2 col-md-offset-2 col-xs-offset-1">
+            <div class="container-fluid center" style="background-color:#FFFFFF; @if(EventController.event.configuration.pageBorder){-moz-box-shadow: 0px 0px 8px #2f2e2e; -webkit-box-shadow: 0px 0px 8px #2f2e2e; box-shadow: 0px 0px 8px 0px #2f2e2e;} margin: 0px 0 30px 0;">
+                @if(EventController.event.configuration.multipleLanguages) {
+                <div class="row" id="top">
+                    <div class="col-lg-2 col-md-2 col-xs-2 pull-right">
+                    	<select class="form-control input-sm" id="language" onChange="changeLanguage(this.options[this.selectedIndex].value)">
+                    	@for(element <- play.Play.application().configuration().getString("application.langs").toString().split(',')) {
+                    		<option value="@element" style="background-image:url("@routes.Assets.at("images/flags/de.png")");"" @if(element==lang().toString().substring(5,7)) {selected}>@element</option>
+                    	}
+                    	</select>
+                    </div>
+                </div>
+               	}
+                <div class="row" id="header">
+                    <div class="col-lg-12 col-md-12 col-xs-12" style="padding:0 0 0 0 !important"><img width="100%" src="@EventController.event.configuration.pageHeader" alt="header" class="img-thumbnail" style="padding:0 0 0 0 !important"></div>
+                </div>
+                <div class="row" id="navigation" style="background-color: #@EventController.event.configuration.pageNavigationBackgroundcolor;">
+                    <div class="col-lg-12 col-md-12 col-xs-12">@inc.navigation()</div>
+                </div>
+                <div class="row" id="headline" style="background-color: #@EventController.event.configuration.pageHeadlineBackgroundcolor;padding-bottom:40px;">
+                    <div class="col-lg-4 col-md-4 col-xs-4" align="left">@EventController.event.name</div>
+                    <div class="col-lg-4 col-md-4 col-xs-4" align="left">@Messages("global.demand") @EventController.event.supportEmail</div>
+                    <div class="col-lg-4 col-md-4 col-xs-4" align="right"><span id='currentTime'></span></div>
+                </div>
+                <!-- Display global messages -->
+        		<div class="row" id="globalMessage" style="background-color: #@EventController.event.configuration.pageContentBackgroundcolor;">
+        			<div class="col-lg-12 col-md-12 col-xs-12">@inc.alert()</div>
+       			</div>
+                <div class="row" id="content" style="background-color: #@EventController.event.configuration.pageContentBackgroundcolor;">
+                    <div class="col-lg-12 col-md-12 col-xs-12">@content</div>
+                </div>
+                <div class="row" style="background-color: #@EventController.event.configuration.pageFooterBackgroundcolor;">
+                	<footer style="padding-top: 10px;">
+                		<div class="col-lg-6 col-md-6 col-xs-6" align="left">@Html(EventController.event.configuration.pageFooterLeft)</div>
+                		<div class="col-lg-6 col-md-6 col-xs-6" align="right">@Html(EventController.event.configuration.pageFooterRight)</div>
+                    	<div class="col-lg-12 col-md-12 col-xs-12">
+                    		<p>@inc.footer()</p>
+                   		</div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/javascripts/ie10-viewport-bug-workaround.js"></script>
+</body>
+
+</html>

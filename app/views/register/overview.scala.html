@@ -1,0 +1,87 @@
+@(participant: models.Participant, tickets: List[String], stepIndex: Integer)
+
+@index {
+
+@inc.stepwizard(stepIndex)
+
+
+
+
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		@helper.form(routes.RegistrationController.submitRegistration(EventController.event.shortcode, stepIndex), 'class -> "form-horizontal", 'id -> "participant-form") {
+		<div class="table-responsive">
+  			<table class="table table-hover">
+  				@if(participant.salutation!=null && participant.salutation!="") { <tr>
+  					<td width="30%" class="text-left">@Messages("participant.salutation.label")</td><td class="text-left">@participant.salutation</td>
+  				</tr> }
+  				@if(participant.firstname!=null && participant.firstname!="") { <tr>
+  					<td width="30%" class="text-left">@Messages("participant.firstname.label")</td><td class="text-left">@participant.firstname</td>
+  				</tr> }
+  				@if(participant.lastname!=null && participant.lastname!="") { <tr>
+  					<td width="30%" class="text-left">@Messages("participant.lastname.label")</td><td class="text-left">@participant.lastname</td>
+  				</tr> }
+  			</table>
+  		</div>	
+  		
+  		
+  		@for((ticket, index) <- tickets.zipWithIndex) {
+	@ticket
+}
+  		
+  		@register.button(stepIndex)	
+		}	
+
+						public String salutation;
+	public String lastname;
+	public String firstname;
+	public Date birthday;
+	public String badgeFirstname;
+	public String badgeLastname;
+	public String company;
+	public String companyAdditional;
+	public String department;
+	public String serviceCostCenter;
+	public String position;
+	public String vatin;
+	public String street;
+	public String postofficebox;
+	public Integer postcode;
+	public String location;
+	public String country;
+	public String phone;
+	public String mobilephone;
+	public String telefax;
+	public String email;
+	public String url;
+	public String username;
+	public String password;
+	public String passwordConfirmation;
+
+	public String billingsalutation;
+	public String billinglastname;
+	public String billingfirstname;
+	public String billingcompany;
+	public String billingcompanyAdditional;
+	public String billingdepartment;
+	public String billingserviceCostCenter;
+	public String billingvatin;
+	public String billingstreet;
+	public Integer billingpostcode;
+	public String billinglocation;
+	public String billingcountry;
+	public String billingemail;
+
+	public String shippingsalutation;
+	public String shippinglastname;
+	public String shippingfirstname;
+	public String shippingcompany;
+	public String shippingcompanyAdditional;
+	public String shippingdepartment;
+	public String shippingstreet;
+	public Integer shippingpostcode;
+	public String shippinglocation;
+	public String shippingcountry;	
+	</div>
+</div>
+}

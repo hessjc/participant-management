@@ -1,0 +1,107 @@
+@import bootstrap3._
+
+@(globalForm: Form[formulars.ConfigurationForm.GlobalForm])
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+  <h3>@Messages("configuration.global.headline")</h3>
+</div>
+
+@helper.form(routes.ConfigurationController.saveGlobal(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "configuration-form") {
+	<!-- Titel -->
+	@input(globalForm("pageTitle"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.global.title"),
+		typ = "text",
+		value = EventController.event.configuration.pageTitle)
+		
+	<!-- Header/Logo -->
+	@input(globalForm("pageHeader"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.global.header"),
+		typ = "text",
+		value = EventController.event.configuration.pageHeader)
+		
+	<!-- Seiten-Breite -->
+	@input(globalForm("pageWidth"),
+		icon = "glyphicon glyphicon-transfer",
+		label = Messages("configuration.global.width"),
+		typ = "number",
+		steps = "1",
+		value = EventController.event.configuration.pageWidth.toString())	
+	
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>@Messages("configuration.global.border"):</span>
+			<input class="form-control" type="checkbox" name="pageBorder" id="pageBorder" value="true" @if(EventController.event.configuration.pageBorder){checked}></input>
+		</div>	
+	</div>
+	
+	<select class="form-control" id="theme" name="theme">
+		@for(theme <- utilities.Configuration.themes) {
+		<option value="@theme">@theme</option>
+		}
+	</select>
+		
+	<link href="@routes.Assets.at("stylesheets/color-picker/pick-a-color-1.2.3.min.css")" rel="stylesheet"' />
+	<script src="@routes.Assets.at("javascripts/color-picker/pick-a-color-1.2.3.min.js")" type="text/javascript"></script>
+	<script src="@routes.Assets.at("javascripts/color-picker/tinycolor.js")" type="text/javascript"></script>
+	
+	pageHeadlineBackground
+	<input type="text" id="pageHeadlineBackgroundcolor" name="pageHeadlineBackgroundcolor" value="@EventController.event.configuration.pageHeadlineBackgroundcolor" class="pick-a-color form-control">
+	
+	pageNavigationBackground
+	<input type="text" id="pageNavigationBackgroundcolor" name="pageNavigationBackgroundcolor" value="@EventController.event.configuration.pageNavigationBackgroundcolor" class="pick-a-color form-control">
+	
+	pageContentBackground
+	<input type="text" id="pageContentBackgroundcolor" name="pageContentBackgroundcolor" value="@EventController.event.configuration.pageContentBackgroundcolor" class="pick-a-color form-control">
+	
+	pageFooterBackground
+	<input type="text" id="pageFooterBackgroundcolor" name="pageFooterBackgroundcolor" value="@EventController.event.configuration.pageFooterBackgroundcolor" class="pick-a-color form-control">
+	
+	<script>
+	$(".pick-a-color").pickAColor();
+	</script>
+	
+	</br>
+	<!-- Header/Logo -->
+	@input(globalForm("pageBackgroundimage"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.global.pagebackgroundimage"),
+		typ = "text",
+		value = EventController.event.configuration.pageBackgroundimage)
+	
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>@Messages("configuration.global.multipleLanguages"):</span>
+			<input class="form-control" type="checkbox" name="multipleLanguages" id="multipleLanguages" value="true" @if(EventController.event.configuration.multipleLanguages){checked}></input>
+		</div>	
+	</div>
+	
+	footer left
+	<textarea id="pageFooterLeft" name="pageFooterLeft" class="textarea" placeholder="" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@EventController.event.configuration.pageFooterLeft</textarea>
+
+	footer right
+	<textarea id="pageFooterRight" name="pageFooterRight" class="textarea" placeholder="" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@EventController.event.configuration.pageFooterRight</textarea>
+
+	<script>
+	    $('#pageFooterLeft').wysihtml5({
+	        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+	        "color": true,
+	        "size": 'sm',
+	        "html": true,
+	        "format-code": true
+	    });
+	    
+	    $('#pageFooterRight').wysihtml5({
+	        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+	        "color": true,
+	        "size": 'sm',
+	        "html": true,
+	        "format-code": true
+	    });	    
+	</script>
+	
+	<div class="form-group">	
+		<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+	</div>	
+}

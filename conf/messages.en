@@ -1,0 +1,16 @@
+main.title=participantsmanagement
+
+navigation.start=start
+navigation.participant=personal information
+navigation.ticket=ticketing
+navigation.courses=courses
+
+start.login=login
+start.registration=registration
+start.welcometext=welcome to this special event
+start.registration.button.text=register as new participant
+
+teilnehmer.salutation=salutation
+teilnehmer.firstname=firstname
+teilnehmer.lastname=lastname
+teilnehmer.email=email

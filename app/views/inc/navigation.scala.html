@@ -1,0 +1,53 @@
+<div class="btn-group btn-group-justified">
+	<div class="btn-group">
+		<a href="@routes.Application.showStart(EventController.event.shortcode)">
+	   		<button type="button" class="btn btn-nav">
+	   			<span class="glyphicon glyphicon-home"></span>
+	    		<p>@Messages("navigation.start")</p>
+	     	</button>
+		</a>
+	</div>
+	<div class="btn-group">
+		<a href="@routes.Application.showLogin(EventController.event.shortcode)">
+  			<button type="button" class="btn btn-nav">
+            	<span class="glyphicon glyphicon-user"></span>
+    			<p>@Messages("navigation.login")</p>
+         	</button>
+       	</a>
+   	</div>
+	<div class="btn-group">
+		<a href="@routes.Application.showCalendar(EventController.event.shortcode)">
+  			<button type="button" class="btn btn-nav">
+      			<span class="glyphicon glyphicon-calendar"></span>
+    			<p>@Messages("navigation.calendar")</p>
+          	</button>
+		</a>       
+	</div>
+	<div class="btn-group">
+		<a href="@routes.Application.showNews(EventController.event.shortcode)">
+  			<button type="button" class="btn btn-nav">
+      			<span class="glyphicon glyphicon-calendar"></span>
+    			<p>@Messages("navigation.news")</p>
+          	</button>
+		</a>
+	</div>
+</div>
+
+<script>
+var pathArray = window.location.pathname.split('/');
+var activeEl = -1;
+if(pathArray[2]=="") activeEl = 0;
+if(pathArray[2]=="login") activeEl = 1;
+if(pathArray[2]=="calendar") activeEl = 2;
+if(pathArray[2]=="news") activeEl = 3;
+
+$(function() {
+    var items = $('.btn-nav');
+    $(items[activeEl]).addClass('active');
+    $(".btn-nav").click(function() {
+        $(items[activeEl]).removeClass('active');
+        $(this).addClass('active');
+        activeEl = $(".btn-nav").index(this);
+    });
+});
+</script>

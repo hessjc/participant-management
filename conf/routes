@@ -1,0 +1,80 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /:shortcode/                    		controllers.Application.showStart(shortcode: String)
+GET     /:shortcode/login               		controllers.Application.showLogin(shortcode: String)
+GET		/:shortcode/calendar					controllers.Application.showCalendar(shortcode: String)
+GET		/:shortcode/news						controllers.Application.showNews(shortcode: String)
+GET		/:shortcode/impressum					controllers.Application.showImpressum(shortcode: String)
+GET		/:shortcode/privacy						controllers.Application.showPrivacy(shortcode: String)
+GET		/:shortcode/contact						controllers.Application.showContact(shortcode: String)
+
+POST    /:shortcode/login                     	controllers.AuthenticationController.authenticateParticipant(shortcode: String)
+POST    /:shortcode/password                    controllers.AuthenticationController.passwordLogin(shortcode: String)
+
+#GET    /logout                     controllers.Application.logout()
+
+GET     /:shortcode/registration         					controllers.RegistrationController.showRegistration(shortcode: String, stepIndex: Integer)
+GET    	/:shortcode/registration/:stepIndex/participant    	controllers.RegistrationController.showParticipant(shortcode: String, stepIndex: Integer)
+GET     /:shortcode/registration/:stepIndex/ticket        	controllers.RegistrationController.showTicket(shortcode: String, stepIndex: Integer)
+GET     /:shortcode/registration/:stepIndex/overview       	controllers.RegistrationController.showOverview(shortcode: String, stepIndex: Integer)
+POST   	/:shortcode/registration/:stepIndex/participant    	controllers.RegistrationController.addParticipant(shortcode: String, stepIndex: Integer)
+POST   	/:shortcode/registration/:stepIndex/ticket    		controllers.RegistrationController.addTicket(shortcode: String, stepIndex: Integer)
+POST	/:shortcode/registration/:stepIndex/overview		controllers.RegistrationController.submitRegistration(shortcode: String, stepIndex: Integer)
+
+GET     /administration                			controllers.AdministrationController.administration()
+POST    /administration                			controllers.AdministrationController.authenticate()
+
+GET		/configuration							controllers.ConfigurationController.showConfiguration(shortcode: String)
+POST	/configuration/global					controllers.ConfigurationController.saveGlobal(shortcode: String)
+POST	/configuration/event/save				controllers.ConfigurationController.saveEvent(shortcode: String)
+POST	/configuration/event/add				controllers.ConfigurationController.addEvent(shortcode: String)
+POST    /configuration/template/login			controllers.ConfigurationController.saveLoginTemplate(shortcode: String)
+POST    /configuration/participant				controllers.ConfigurationController.saveParticipantForm(shortcode: String)
+POST	/configuration/email					controllers.ConfigurationController.saveEmail(shortcode: String)
+POST    /configuration/impressum				controllers.ConfigurationController.saveImpressum(shortcode: String)
+POST   	/configuration/privacy					controllers.ConfigurationController.savePrivacy(shortcode: String)
+POST   	/configuration/contact					controllers.ConfigurationController.saveContact(shortcode: String)
+
+GET   	/ticket/refresh							@controllers.TicketController.refreshTicketPrice(id: Long, count: Integer)
+GET    	/configuration:shortcode/tickets/add	@controllers.TicketController.addTicket(shortcode: String)
+GET    	/configuration/tickets/save				@controllers.TicketController.saveTicket(id: Long, title: String, description: String, price: Double, minpp: Integer, maxpp: Integer, contingent: Integer, duration: Integer, img: String)
+GET    	/configuration/tickets/remove			@controllers.TicketController.removeTicket(id: Long)
+
+GET    	/configuration:shortcode/courses/add	@controllers.CourseController.addCourse(shortcode: String)
+GET    	/configuration/courses/save				@controllers.CourseController.saveCourse(id: Long, title: String, description: String, slots: Integer)
+GET    	/configuration/courses/remove			@controllers.CourseController.removeCourse(id: Long)
+
+
+
+
+POST    /changeLanguage            		controllers.Application.changeLanguage(lang: String)
+POST    /messages                   	controllers.Application.refreshGlobalMessage()
+POST    /upload                   		controllers.Application.upload(fileName: String, filePath: String)
+POST    /changeEvent            		controllers.Application.changeEvent(event: String)
+
+POST		/mail						controllers.Application.sendMail(pid:Long)
+
+GET     /settings                   controllers.account.settings.Index.index()
+GET     /settings/password          controllers.account.settings.Password.index()
+POST    /settings/password          controllers.account.settings.Password.runPassword()
+GET     /settings/email             controllers.account.settings.Email.index()
+POST    /settings/email             controllers.account.settings.Email.runEmail()
+
+# Displays a page to send a reset email given the user's email.
+GET     /reset/ask                  	controllers.account.Reset.ask()
+POST    /reset/ask                  	controllers.account.Reset.runAsk()
+
+# Resets the password using the password.
+GET     /reset/:token               	controllers.account.Reset.reset(token:String)
+POST    /reset/:token               	controllers.account.Reset.runReset(token:String)
+
+GET     /email/:token               	controllers.account.settings.Email.validateEmail(token:String)
+
+GET     /javascriptRoutes           	controllers.Application.javascriptRoutes
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               	controllers.Assets.at(path="/public", file)
+->    	/auth                			securesocial.Routes

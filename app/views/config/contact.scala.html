@@ -1,0 +1,25 @@
+@import bootstrap3._
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+  <h3>@Messages("configuration.contact.headline")</h3>
+</div>
+
+@helper.form(routes.ConfigurationController.saveContact(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "contact-form") {
+<textarea id="contact" name="contact" class="textarea" placeholder="" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@EventController.event.configuration.contact</textarea>
+<div class="form-group">	
+	<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+</div>	
+}
+<script>
+    $('#contact').wysihtml5({
+        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+        "color": true,
+        "size": 'sm',
+        "html": true,
+        "format-code": true
+    });
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    $(prettyPrint);
+</script>

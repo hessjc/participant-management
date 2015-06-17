@@ -1,0 +1,20 @@
+@(field: Field, icon: String = "glyphicon-user", rows: String = "1", label: String = "CHANGEME", placeholder: String = "", help: String = "")
+
+<div class="form-group @if(field.hasErrors) {has-error}">
+	<div class="input-group">
+		<span class="input-group-addon"><span class="glyphicon @icon" style="margin-right: 10px;"></span>@label:</span>
+		<textarea class="form-control textarea" rows="@rows" id="@field.id" name="@field.name" placeholder="@placeholder" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@placeholder</textarea>
+      	<span class="help-block">@help</span>
+      	<span class="help-block">@{field.error.map { error => error.message }}</span>
+	</div>
+</div>
+
+<script>
+    $('#@field.id').wysihtml5({
+        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+        "color": true,
+        "size": 'sm',
+        "html": true,
+        "format-code": true
+    });
+</script>

@@ -1,0 +1,67 @@
+@(emailForm: Form[formulars.ConfigurationForm.EmailForm])
+
+@import bootstrap3._
+
+<div class="page-header" style="text-align: left; padding-left: 20px;">
+  <h3>@Messages("configuration.emails.headline")</h3>
+</div>
+
+@helper.form(routes.ConfigurationController.saveEmail(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "emails-form") {
+	
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>@Messages("configuration.events.display"):</span>
+			<input class="form-control" type="checkbox" name="emailDisplay" id="emailDisplay" value="true" @if(EventController.event.configuration.emailConfig.display){checked}></input>
+		</div>	
+	</div>
+	
+	<!-- Betreff der Email -->
+	@input(emailForm("emailSubject"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.emails.subject"),
+		typ = "text",
+		value = EventController.event.configuration.emailConfig.subject)
+	
+	<!-- Name des Absenders -->
+	@input(emailForm("emailFromName"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.emails.fromName"),
+		typ = "text",
+		value = EventController.event.configuration.emailConfig.fromName)
+
+	<!-- Email des Absenders -->
+	@input(emailForm("emailFromEmail"),
+		icon = "glyphicon glyphicon-user",
+		label = Messages("configuration.emails.fromEmail"),
+		typ = "email",
+		value = EventController.event.configuration.emailConfig.fromEmail)
+		
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>@Messages("configuration.events.addTNB"):</span>
+			<input class="form-control" type="checkbox" name="emailAddTNB" id="emailAddTNB" value="true" @if(EventController.event.configuration.emailConfig.addTNB){checked}></input>
+		</div>	
+	</div>
+	
+	<div class="form-group">
+		<div class="input-group">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-unchecked" style="margin-right: 10px;"></span>@Messages("configuration.events.addAttachement"):</span>
+			<input class="form-control" type="checkbox" name="emailAddAttachement" id="emailAddAttachement" value="true" @if(EventController.event.configuration.emailConfig.addAttachement){checked}></input>
+		</div>	
+	</div>			
+
+	<textarea id="emailBodyText" name="emailBodyText" class="textarea" placeholder="" style="width: 100%; height: 400px; font-size: 14px; line-height: 18px;">@EventController.event.configuration.emailConfig.bodyText</textarea>
+	
+	<div class="form-group">	
+		<button id="save" type="submit" value="submit" class="btn btn-primary">@Messages("button.save")</button>
+	</div>	
+}
+<script>
+    $('#emailBodyText').wysihtml5({
+        "stylesheets": ["assets/stylesheets/wysihtml5/wysiwyg-color.css", "assets/stylesheets/wysihtml5/github.css"],
+        "color": true,
+        "size": 'sm',
+        "html": true,
+        "format-code": true
+    });
+</script>

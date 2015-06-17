@@ -1,0 +1,148 @@
+@(ticketForm: Form[formulars.RegistrationForm.TicketForm], stepIndex: Integer)
+
+@import bootstrap3._
+
+@index {
+
+@inc.stepwizard(stepIndex)
+
+@helper.form(routes.RegistrationController.addTicket(EventController.event.shortcode,stepIndex), 'class -> "ticket-form") {
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-xs-12">
+		<div class="row">
+    		<div class="page-header">
+				<h3>@Messages("ticket.headline.title") <small>@Messages("ticket.headline.subtitle")</small></h3>
+			</div>
+		</div>
+		<div class="col-lg-9 col-md-9 col-xs-9">
+			<div class="row">
+				<div class="alert alert-danger alert-dismissible" role="alert" id="errorMessage" style="display:block">
+	  				<strong style="padding-right: 5px;">@Messages("error")</strong> @Messages("ticket.error.missingarticles")
+				</div>
+			</div>
+			<div class="row">
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<tr>
+							<th align="left">@Messages("ticket.article")</th>
+							<th>&nbsp;</th>
+							<th style="text-align: center">@Messages("ticket.price.unit")</th>
+							<th style="text-align: center">@Messages("ticket.count")</th>
+							<th align="right">@Messages("ticket.price.total")</th>
+						</tr>
+						@for(ticket <- Ticket.find.all()) {
+						<tr>
+							<td><img src='@ticket.img' /></td>
+							<td align="left"><strong>@ticket.title</strong></br><small>@Html(ticket.description)</small></td>
+							<td>@("%.2f".format(ticket.price)) @Messages("main.currency.shortcode")</td>
+							<td width="140px">
+								<div class="input-group number-spinner">
+									<span class="input-group-btn data-dwn">
+										<button type="button" class="btn btn-primary" data-dir="dwn" data-id="ticket.@ticket.id" data-price="@ticket.price"><span class="glyphicon glyphicon-minus"></span></button>
+									</span>
+									<input type="text" class="form-control text-center" name="ticket.@ticket.id" value="@ticket.minpp" min="@ticket.minpp" max="@ticket.maxpp" onchange="refreshPriceTotal(this.value,this)" data-id="ticket.@ticket.id" data-price="@ticket.price">
+									<span class="input-group-btn data-up">
+										<button type="button" class="btn btn-primary" data-dir="up" data-id="ticket.@ticket.id" data-price="@ticket.price"><span class="glyphicon glyphicon-plus"></span></button>
+									</span>
+								</div>
+							</td>
+							<td id="ticket.@ticket.id" class="priceTotal">0,00 @Messages("main.currency.shortcode")</td>
+						</tr>
+						}
+						<tr>
+							<td colspan="4" style="text-align: right"><b>@Messages("ticket.price.totalcard")</b></td>
+							<td id="totalPriceCart">0,00 @Messages("main.currency.shortcode")</td>
+						</tr>
+					</table>
+				</div>
+        	</div>
+        </div>
+    	<div class="col-lg-3 col-md-3 col-xs-3">
+    		<div class="page-header">
+    			Warenkorb + Zahlungsmethoden
+    			Hinweis
+				Bestellen Sie Ihre Tickets online und drucken Sie diese selbst aus. Auf diese Weise können Sie bei Ihrem Besuch der Veranstaltung bequem die Eingänge passieren.
+    		</div>
+    	</div>
+    </div>
+</div>
+<input type="hidden" name="checkError" id="checkError" value="0">
+
+@register.button(stepIndex)
+}
+    
+<script>
+
+$( document ).ready(function() {
+	$("input").each(function() {
+    	if($(this).val()>0) refreshPriceTotal($(this).val(),$(this));
+	})
+});
+
+function errorLabel() {
+	var count = 0;
+  	$("input").each(function() {
+    	if($(this).val()>0) count++;
+    });
+    if(count>0) {
+    	document.getElementById("errorMessage").style.display = "none";
+    	document.getElementById("checkError").value = "1";
+    }
+    else {
+    	document.getElementById("errorMessage").style.display = "block";
+    	document.getElementById("checkError").value = "0";
+    }
+}
+
+function refreshTotalPriceCart() {
+    var all = 0.0;
+    $(".priceTotal").each(function () {
+    	all += parseFloat($(this).text().replace(',', '.'));
+    });
+    $("#totalPriceCart").text((all.toFixed(2) + "@Messages("main.currency.shortcode")").replace(".",","));
+}
+    
+function refreshPriceTotal(count,element) {
+    myJsRoutes.controllers.TicketController.refreshTicketPrice(1,count).ajax({
+        success : function(data) {                              
+            document.getElementById($(element).data('id')).innerHTML=data.price;
+            refreshTotalPriceCart();
+           	errorLabel();
+        }
+    });
+}
+    
+$(function() {
+	var action;
+    $(".number-spinner button").mousedown(function () {
+		btn = $(this);
+       	input = btn.closest('.number-spinner').find('input');
+       	btn.closest('.number-spinner').find('button').prop("disabled", false);
+
+        if (btn.attr('data-dir') == 'up') {
+       		action = setInterval(function() {
+            	if(input.attr('max') == undefined || parseInt(input.val()) < parseInt(input.attr('max'))) {
+               		input.val(parseInt(input.val())+1);
+                   	refreshPriceTotal(input.val(),input);
+             	} else{
+                 	btn.prop("disabled", true);
+                	clearInterval(action);
+           		}
+         	}, 50);
+      	} else {
+          	action = setInterval(function() {
+          		if(input.attr('min') == undefined || parseInt(input.val()) > parseInt(input.attr('min'))) {
+                	input.val(parseInt(input.val())-1);
+                  	refreshPriceTotal(input.val(),input);
+           		} else{
+                	btn.prop("disabled", true);
+                  	clearInterval(action);
+             	}
+          	}, 50);
+        }
+	}).mouseup(function() {
+   		clearInterval(action);
+	});
+});
+</script>
+}

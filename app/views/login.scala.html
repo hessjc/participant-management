@@ -1,0 +1,182 @@
+@(loginParticipantForm: Form[formulars.AuthenticationForm.LoginParticipantForm])(askForm: Form[controllers.account.Reset.AskForm])
+@import bootstrap3._
+
+@index {
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-xs-6 pull-left">
+            
+			@if(EventController.event.configuration.findTemplateByName("loginTemplate").login) {
+            <div class="panel panel-default">
+            	<div class="panel-heading" id="login-heading">
+            		@Messages("login.login.headline")
+            	</div>
+            	
+            	@helper.form(routes.AuthenticationController.authenticateParticipant(EventController.event.shortcode), 'class -> "login-form") {
+            	<div class="panel-body" id="form-olvidado">
+            		<div class="row">
+						<div class="text-center">
+							<img class="profile-img" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+						<!-- Email -->
+						@input(loginParticipantForm("username"),
+							icon = "glyphicon glyphicon-user",
+							label = "",
+							typ = "text",
+							value = "",
+							placeholder = Messages("login.login.email"))
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10  col-md-offset-1">
+						<!-- Password -->
+						@input(loginParticipantForm("password"),
+							icon = "glyphicon glyphicon-lock",
+							label = "",
+							typ = "password",
+							value = "",
+							placeholder = Messages("login.login.password"))	
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+						    <div class="form-actions">
+						        <input type="submit" class="btn btn-lg btn-primary btn-block" value="@Messages("button.login")">
+						    </div>
+						</div>
+					</div>
+            	</div>
+            	}
+            	
+            	@helper.form(controllers.account.routes.Reset.runAsk(), 'class -> "password-reset-form") {
+            	<div class="panel-body" id="form-olvidado" style="display:none;">
+            		<div class="row">
+						<div class="center-block">
+							<img class="profile-img" src="http://buzzom.com/wp-content/uploads/2010/01/question-mark.jpg?sz=120" alt="">
+						</div>
+					</div>
+					<div class="row">
+				 		<div class="col-sm-12 col-md-10 col-md-offset-1">
+				 			<div class="page-header" style="text-align: center">
+				 				<h4>Passwort zur&uuml;cksetzen</h4>
+				 			</div>
+				 		</div>
+				 	</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+            
+			        	<!-- Passwort zurücksetzen -->
+						@input(askForm("email"),
+							icon = "glyphicon glyphicon-envelope",
+							label = "",
+							typ = "email",
+							value = "",
+							placeholder = "E-Mail-Adresse")
+
+				 		</div>
+				 	</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+						    <div class="form-actions">
+						        <input type="submit" class="btn btn-lg btn-primary btn-block" value="@Messages("button.reset")">
+						    </div>
+						</div>
+					</div> 		
+            	</div>
+            	}
+            	<div class="panel-footer ">
+            		<small style="margin:10px 0 0 10px;"><a href="#" id="olvidado">@Messages("forgot.password")</a></small>
+            	</div>
+
+				<script>
+				  $(document).ready(function() {
+					  $('#olvidado').click(function(e) {
+					    e.preventDefault();
+					    $('div#form-olvidado').toggle('500');
+					    if($('#olvidado').text()=="@{Messages("login.login.backlogin")}"){$('#olvidado').text("@{Messages("forgot.password")}");$('#login-heading').text("@{Messages("login.login.headline")}");}
+					    else {$('#olvidado').text("@{Messages("login.login.backlogin")}");$('#login-heading').text("@{Messages("forgot.password")}");}
+					  });
+					});
+				</script>
+            </div>
+            }
+            
+        </div>
+        
+        <div class="col-lg-6 col-md-6 col-xs-6 pull-right">
+        	
+			@if(EventController.event.configuration.findTemplateByName("loginTemplate").registration) {
+        	<div class="panel panel-default">
+        		<div class="panel-heading">
+            		@Messages("login.registration.headline")
+            	</div>
+            	<div class="panel-body">
+            		<div class="row">
+						<div class="center-block">
+							<img class="profile-img" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 col-md-10 col-md-offset-1">
+            			@Messages("login.registration.welcometext")
+            		</div>
+				</div>
+				<div class="row" style="margin: 10px 0 10px 0;">
+					<div class="col-sm-12 col-md-10 col-md-offset-1">
+						<div class="form-actions">
+            				<a type="submit" class="btn btn-lg btn-success btn-block" href="@routes.RegistrationController.showRegistration(EventController.event.shortcode, 0)">@Messages("login.registration.button.text")</a>
+  						</div>
+					</div>
+            	</div>
+            	<div class="panel-footer">
+            		&nbsp;
+           		</div>      
+        	</div>
+        	}
+        	
+        	@if(EventController.event.configuration.findTemplateByName("loginTemplate").passwordLogin) {
+        	@helper.form(routes.AuthenticationController.passwordLogin(EventController.event.shortcode), 'class -> "form-horizontal", 'id -> "passwort-form") {
+        	<div class="panel panel-default">
+        		<div class="panel-heading">
+            		@Messages("login.passwort.headline")
+            	</div>
+            	<div class="panel-body">
+            		<div class="row">
+            			<div class="col-sm-12 col-md-10 col-md-offset-1">
+							<div class="center-block">
+								<div class="form-group">
+									<div class="input-group">
+										<span class="input-group-addon"><span class="glyphicon glyphicon-lock" style="margin-right: 6px;"></span></span>
+										<input class="form-control" id="password" name="password" type="password"></input>
+									</div>	
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+            				<div class="center-block">
+            				@Messages("login.passwort.welcometext")
+            				</div>
+            			</div>
+					</div>
+					<div class="row" style="margin: 10px 0 10px 0;">
+						<div class="col-sm-12 col-md-10 col-md-offset-1">
+							<div class="form-actions">
+            					<input type="submit" class="btn btn-lg btn-primary btn-block" value="@Messages("button.login")">
+  							</div>
+						</div>
+            		</div>
+            	</div>
+            	<div class="panel-footer ">
+            		&nbsp;
+           		</div>      
+        	</div> 
+        	}
+        	}
+        </div>
+    </div>
+}
